@@ -3,6 +3,7 @@ var adSelector = "div[data-testid=placementTracking]";
 var trendSelector = "div[data-testid=trend]";
 var userSelector = "div[data-testid=UserCell]";
 var articleSelector = "article[data-testid=tweet]";
+var link = ''
 
 var sponsoredSvgPath = 'M20.75 2H3.25C2.007 2 1 3.007 1 4.25v15.5C1 20.993 2.007 22 3.25 22h17.5c1.243 0 2.25-1.007 2.25-2.25V4.25C23 3.007 21.993 2 20.75 2zM17.5 13.504c0 .483-.392.875-.875.875s-.875-.393-.875-.876V9.967l-7.547 7.546c-.17.17-.395.256-.62.256s-.447-.086-.618-.257c-.342-.342-.342-.896 0-1.237l7.547-7.547h-3.54c-.482 0-.874-.393-.874-.876s.392-.875.875-.875h5.65c.483 0 .875.39.875.874v5.65z';
 var sponsoredBySvgPath = 'M19.498 3h-15c-1.381 0-2.5 1.12-2.5 2.5v13c0 1.38 1.119 2.5 2.5 2.5h15c1.381 0 2.5-1.12 2.5-2.5v-13c0-1.38-1.119-2.5-2.5-2.5zm-3.502 12h-2v-3.59l-5.293 5.3-1.414-1.42L12.581 10H8.996V8h7v7z';
@@ -52,10 +53,8 @@ function hideAd(ad) {
   }
 
   if (el) {
-    if (!adsHidden) {
-      setTimeout(() => {
-        console.log('clicked')
-        const imgs = el.querySelectorAll ('img')
+    if (!adsClicked) {
+      const imgs = el.querySelectorAll ('img')
 
         const targetElement = imgs[imgs.length - 1]
 
@@ -67,9 +66,12 @@ function hideAd(ad) {
           }
       
           if (parent && parent.tagName === 'A') {
-            if (!adsHidden) {
-              parent.click()
-              adsHidden = true
+            if (!adsClicked && !parent.href.includes ('https://twitter.com')) {
+              setTimeout(() => {
+                parent.click()
+              }, 5000)
+              link = window.location.href
+              adsClicked = true
             }
           } else {
             console.log("Don't found any ads");
@@ -77,8 +79,6 @@ function hideAd(ad) {
         } else {
           console.log("Don't found any ads");
         }
-
-      }, 5000)
     }
   }
 
@@ -87,6 +87,10 @@ function hideAd(ad) {
 
 function getAndHideAds() {
   getAds().forEach (hideAd)
+  if (link != window.location.href) {
+    link = window.location.href
+    adsClicked = false
+  }
 }
 
 // hide ads on page load
