@@ -7,6 +7,9 @@ var link = ''
 
 var adsLinkNow = ''
 
+var addScrolledEvent = false;
+var doneMissionScrollAds = false;
+
 var sponsoredSvgPath = 'M20.75 2H3.25C2.007 2 1 3.007 1 4.25v15.5C1 20.993 2.007 22 3.25 22h17.5c1.243 0 2.25-1.007 2.25-2.25V4.25C23 3.007 21.993 2 20.75 2zM17.5 13.504c0 .483-.392.875-.875.875s-.875-.393-.875-.876V9.967l-7.547 7.546c-.17.17-.395.256-.62.256s-.447-.086-.618-.257c-.342-.342-.342-.896 0-1.237l7.547-7.547h-3.54c-.482 0-.874-.393-.874-.876s.392-.875.875-.875h5.65c.483 0 .875.39.875.874v5.65z';
 var sponsoredBySvgPath = 'M19.498 3h-15c-1.381 0-2.5 1.12-2.5 2.5v13c0 1.38 1.119 2.5 2.5 2.5h15c1.381 0 2.5-1.12 2.5-2.5v-13c0-1.38-1.119-2.5-2.5-2.5zm-3.502 12h-2v-3.59l-5.293 5.3-1.414-1.42L12.581 10H8.996V8h7v7z';
 var youMightLikeSvgPath = 'M12 1.75c-5.11 0-9.25 4.14-9.25 9.25 0 4.77 3.61 8.7 8.25 9.2v2.96l1.15-.17c1.88-.29 4.11-1.56 5.87-3.5 1.79-1.96 3.17-4.69 3.23-7.97.09-5.54-4.14-9.77-9.25-9.77zM13 14H9v-2h4v2zm2-4H9V8h6v2z';
@@ -168,14 +171,8 @@ function getAndHideAds() {
         body.insertAdjacentHTML('beforeend', htmlProgress);
       }
 
-
-
-      // Event listener for scrolling
-      window.addEventListener('scroll', function () {
-        if (isUserAtBottom('')) {
-          // console.log('User has scrolled to the bottom of the page');
-          // Perform actions when the user reaches the bottom
-
+      function handleUserAtBottom() {
+        if (isUserAtBottom() && !doneMissionScrollAds) {
           const progressTwitter = document.querySelector("#progress-twitter-mission-xtool")
           if (progressTwitter) {
             progressTwitter.querySelector(".in-progress-xtool").style.display = "none"
@@ -184,9 +181,19 @@ function getAndHideAds() {
             tickIcon.style.width = '24px';
             tickIcon.style.height = '24px';
           }
-
+          doneMissionScrollAds = true;
         }
-      });
+      }
+      handleUserAtBottom();
+      if (!addScrolledEvent) {
+        window.addEventListener('scroll', function () {
+          handleUserAtBottom();
+        });
+        addScrolledEvent = true;
+      }
+
+      // Event listener for scrolling
+
     }
   }
 }
